@@ -34,6 +34,7 @@ gem "sassc-rails" # Uncomment this line
 gem "ostruct"
 gem "faker"
 gem 'diff-lcs', '~> 1.6.2'
+gem "dotenv-rails"
 
 
 # Use Redis adapter to run Action Cable in production
