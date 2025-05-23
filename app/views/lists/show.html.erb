@@ -1,29 +1,119 @@
 <div class="container mt-5">
-    <h1 class="text-center mb-4"><%= @list.name %></h1>
 
-    <div class="mt-4">
+    <!-- Début de la zone fixe -->
+
+    <div class="fixed-top bg-white pt-3 pb-3" style="z-index: 1000;">
+
+        <div class="container mt-5"> <!-- Ajout d'un container interne -->
+
+            <h1 class="text-center mb-4"><%= @list.name %></h1>
+
+            <div class="mt-4 text-center d-flex justify-content-center">
+
+                <%= link_to 'Retours aux Listes', lists_path, class: "btn btn-primary me-2" %>
+
+                <%= link_to 'Add a Movie', new_list_bookmark_path(@list), class: "btn btn-primary" %>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Fin de la zone fixe -->
+
+
+    <!-- Espaceur dynamique pour compenser la hauteur de la zone fixe -->
+
+    <div style="height: 200px;"></div>
+
+
+    <div class="mt-4"> <!-- Suppression de la marge inline -->
+
+        <!-- Le reste du code reste inchangé -->
+
         <h3>Movies in this List</h3>
-        <ul class="list-group">
+
+        <div class="row">
+
             <% @list.movies.each do |movie| %>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <img src="<%= movie.poster_url %>" class="img-thumbnail me-3" style="width: 100px; height: auto;" alt="<%= movie.title %>">
-                        <span><%= movie.title %></span>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="position-relative">
+                            <img src="<%= movie.poster_url %>" class="card-img-top" style="height: 500px; object-fit: cover; width: 100%;" alt="<%= movie.title %>">
+                            <div class="position-absolute top-0 end-0 bg-warning text-dark p-1">
+                                <% rating = (movie.rating.to_f / 2).round %>
+                                <% (1..5).each do |i| %>
+                                    <% if i <= rating %>
+                                        <i class="fas fa-star"></i>
+                                    <% else %>
+                                        <i class="far fa-star"></i>
+                                    <% end %>
+                                <% end %>
+                            </div>
+                        </div>
+                        <div class="card-body" style="margin-top: -150px; position: relative; z-index: 1;">
+                            <div class="p-2" style="border-radius: 10px; backdrop-filter: blur(5px); background-color: rgba(5,5,5, 0.3); color: white;">
+                                <h5 class="card-title"><%= movie.title %></h5>
+                                <p class="card-text">
+                                    <em>
+                                        <small>
+                                            <span class="overview-short"><%= truncate(movie.overview, length: 100) %></span>
+                                            <span class="overview-full" style="display: none;"><%= movie.overview %></span>
+                                            <a href="#" class="read-more">... read more</a>
+                                        </small>
+                                    </em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <%= link_to bookmark_path(Bookmark.find_by(movie_id: movie, list_id: @list)),
+                                method: :delete,
+                                data: { turbo_method: :delete, turbo_confirm: "Êtes-vous sûr ?" },
+                                class: "btn btn-danger btn-sm" do %>
+                                <i class="far fa-trash-alt"></i>
+                            <% end %>
+                        </div>
                     </div>
-                    <%= link_to list_bookmark_path(@list, movie),
-                        method: :delete,
-                        data: { turbo_method: :delete, turbo_confirm: "Êtes-vous sûr ?" },
-                        class: "btn btn-danger btn-sm" do %>
-                        <i class="far fa-trash-alt"></i>
-                    <% end %>
-                </li>
+                </div>
             <% end %>
-        </ul>
+        </div>
     </div>
-
-    <div class="mt-4 text-center d-flex justify-content-center">
-        <%= link_to 'Retours aux Listes', lists_path, class: "btn btn-primary me-2" %>
-        <%= link_to 'Add a Movie', new_list_bookmark_path(@list), class: "btn btn-primary" %>
-    </div>
-
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded and parsed"); // Vérifiez si ce message apparaît dans la console
+    document.querySelectorAll('.read-more').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log("Read more link clicked"); // Vérifiez si ce message apparaît dans la console
+            var cardBody = this.closest('.card-body');
+            var shortText = cardBody.querySelector('.overview-short');
+            var fullText = cardBody.querySelector('.overview-full');
+            if (fullText.style.display === 'none') {
+                fullText.style.display = 'inline';
+                shortText.style.display = 'none';
+                this.textContent = '... read less';
+            } else {
+                fullText.style.display = 'none';
+                shortText.style.display = 'inline';
+                this.textContent = '... read more';
+            }
+        });
+    });
+    // Calcul automatique de la hauteur du header
+
+    const header = document.querySelector('.fixed-top');
+
+    const spacer = document.createElement('div');
+
+    spacer.style.height = header.offsetHeight + 'px';
+
+    header.parentNode.insertBefore(spacer, header.nextElementSibling);
+    });
+
+</script>
+
+
+

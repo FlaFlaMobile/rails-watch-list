@@ -18,10 +18,15 @@ Rails.application.routes.draw do
   # Un utilisateur peut voir les détails d’une liste donnée et son nom
   get "/lists/:id", to: "lists#show", as: :list
 
+  delete "/lists/:id", to: "lists#destroy"
+  
   # Routes pour les bookmarks, nestées sous les listes
   resources :lists do
-    resources :bookmarks, only: [:new, :create, :destroy]
+    resources :bookmarks, only: [:new, :create]
   end
+  
+  resources :bookmarks, only: [:destroy]
+
 end
 
 # # Read all
