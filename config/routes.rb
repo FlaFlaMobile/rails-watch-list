@@ -6,5 +6,33 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "lists#index"
+  
+  # Un utilisateur peut voir toutes les listes
+  get "/lists", to: "lists#index"
+
+  # Un utilisateur peut créer une nouvelle liste
+  get "/lists/new", to: "lists#new", as: :new_list
+  post "/lists", to: "lists#create"
+  
+  # Un utilisateur peut voir les détails d’une liste donnée et son nom
+  get "/lists/:id", to: "lists#show", as: :list
+
+  # Routes pour les bookmarks, nestées sous les listes
+  resources :lists do
+    resources :bookmarks, only: [:new, :create, :destroy]
+  end
 end
+
+# # Read all
+#   get    "restaurants",          to: "restaurants#index"
+#   # Create
+#   get    "restaurants/new",      to: "restaurants#new",  as: :new_restaurant
+#   post   "restaurants",          to: "restaurants#create"
+#   # Read one - The `show` route needs to be *after* `new` route.
+#   get    "restaurants/:id",      to: "restaurants#show", as: :restaurant
+#   # Update
+#   get    "restaurants/:id/edit", to: "restaurants#edit", as: :edit_restaurant
+#   patch  "restaurants/:id",      to: "restaurants#update"
+#   # Delete
+#   delete "restaurants/:id",      to: "restaurants#destroy"

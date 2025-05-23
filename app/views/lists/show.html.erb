@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <h1 class="text-center mb-4"><%= @list.name %></h1>
+
+    <div class="mt-4">
+        <h3>Movies in this List</h3>
+        <ul class="list-group">
+            <% @list.movies.each do |movie| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="<%= movie.poster_url %>" class="img-thumbnail me-3" style="width: 100px; height: auto;" alt="<%= movie.title %>">
+                        <span><%= movie.title %></span>
+                    </div>
+                    <%= link_to list_bookmark_path(@list, movie),
+                        method: :delete,
+                        data: { turbo_method: :delete, turbo_confirm: "Êtes-vous sûr ?" },
+                        class: "btn btn-danger btn-sm" do %>
+                        <i class="far fa-trash-alt"></i>
+                    <% end %>
+                </li>
+            <% end %>
+        </ul>
+    </div>
+
+    <div class="mt-4 text-center d-flex justify-content-center">
+        <%= link_to 'Retours aux Listes', lists_path, class: "btn btn-primary me-2" %>
+        <%= link_to 'Add a Movie', new_list_bookmark_path(@list), class: "btn btn-primary" %>
+    </div>
+
+</div>
