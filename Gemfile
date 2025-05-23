@@ -35,6 +35,7 @@ gem "ostruct"
 gem "faker"
 gem 'diff-lcs', '~> 1.6.2'
 gem "dotenv-rails"
+gem "cloudinary"
 
 
 # Use Redis adapter to run Action Cable in production
